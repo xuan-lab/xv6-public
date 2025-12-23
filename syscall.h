@@ -20,3 +20,9 @@
 #define SYS_link   19
 #define SYS_mkdir  20
 #define SYS_close  21
+
+// Kernel monitoring system calls
+#define SYS_getsysinfo     22  // Get complete system info
+#define SYS_getprocinfo    23  // Get process list
+#define SYS_getmeminfo     24  // Get memory info
+#define SYS_getsyscallstats 25 // Get syscall statistics

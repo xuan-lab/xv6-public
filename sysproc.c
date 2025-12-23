@@ -6,6 +6,7 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
+#include "sysinfo.h"
 
 int
 sys_fork(void)
@@ -88,4 +89,60 @@ sys_uptime(void)
   xticks = ticks;
   release(&tickslock);
   return xticks;
+}
+
+// Kernel monitoring system calls
+
+// Get complete system information
+int
+sys_getsysinfo(void)
+{
+  struct sysinfo *info;
+  
+  if(argptr(0, (char**)&info, sizeof(*info)) < 0)
+    return -1;
+  
+  getsysinfo(info);
+  return 0;
+}
+
+// Get process information list
+int
+sys_getprocinfo(void)
+{
+  struct procinfo *procs;
+  int max;
+  
+  if(argptr(0, (char**)&procs, sizeof(*procs)) < 0)
+    return -1;
+  if(argint(1, &max) < 0)
+    return -1;
+  
+  return getprocinfo(procs, max);
+}
+
+// Get memory information
+int
+sys_getmeminfo(void)
+{
+  struct meminfo *info;
+  
+  if(argptr(0, (char**)&info, sizeof(*info)) < 0)
+    return -1;
+  
+  getmeminfo(info);
+  return 0;
+}
+
+// Get system call statistics
+int
+sys_getsyscallstats(void)
+{
+  struct syscallstats *stats;
+  
+  if(argptr(0, (char**)&stats, sizeof(*stats)) < 0)
+    return -1;
+  
+  getsyscallstats(stats);
+  return 0;
 }

@@ -68,6 +68,7 @@ char*           kalloc(void);
 void            kfree(char*);
 void            kinit1(void*, void*);
 void            kinit2(void*, void*);
+int             kfreepages(void);
 
 // kbd.c
 void            kbdintr(void);
@@ -138,6 +139,25 @@ void            acquiresleep(struct sleeplock*);
 void            releasesleep(struct sleeplock*);
 int             holdingsleep(struct sleeplock*);
 void            initsleeplock(struct sleeplock*, char*);
+
+// sysmon.c - Kernel Status Monitoring
+struct meminfo;
+struct procinfo;
+struct cpuinfo;
+struct procqueue;
+struct syscallstats;
+struct sysinfo;
+void            sysmoninit(void);
+void            record_syscall(int);
+int             count_free_pages(void);
+void            getmeminfo(struct meminfo*);
+void            getprocqueue(struct procqueue*);
+int             getprocinfo(struct procinfo*, int);
+int             getcpuinfo(struct cpuinfo*, int);
+void            getsysinfo(struct sysinfo*);
+void            getsyscallstats(struct syscallstats*);
+void            kernelstatus(void);
+void            ministatus(void);
 
 // string.c
 int             memcmp(const void*, const void*, uint);

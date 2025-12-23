@@ -94,3 +94,20 @@ kalloc(void)
   return (char*)r;
 }
 
+// Count free memory pages (for kernel monitoring)
+int
+kfreepages(void)
+{
+  struct run *r;
+  int count = 0;
+  
+  if(kmem.use_lock)
+    acquire(&kmem.lock);
+  for(r = kmem.freelist; r; r = r->next)
+    count++;
+  if(kmem.use_lock)
+    release(&kmem.lock);
+  
+  return count;
+}
+

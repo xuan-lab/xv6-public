@@ -104,6 +104,12 @@ extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
 
+// Kernel monitoring syscalls
+extern int sys_getsysinfo(void);
+extern int sys_getprocinfo(void);
+extern int sys_getmeminfo(void);
+extern int sys_getsyscallstats(void);
+
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
 [SYS_exit]    sys_exit,
@@ -126,6 +132,11 @@ static int (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
+// Kernel monitoring syscalls
+[SYS_getsysinfo]     sys_getsysinfo,
+[SYS_getprocinfo]    sys_getprocinfo,
+[SYS_getmeminfo]     sys_getmeminfo,
+[SYS_getsyscallstats] sys_getsyscallstats,
 };
 
 void
@@ -136,6 +147,10 @@ syscall(void)
 
   num = curproc->tf->eax;
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
+    // Record syscall statistics (don't record the stats syscalls themselves to avoid recursion)
+    if(num < 22) {
+      record_syscall(num);
+    }
     curproc->tf->eax = syscalls[num]();
   } else {
     cprintf("%d %s: unknown sys call %d\n",

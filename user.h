@@ -1,5 +1,9 @@
 struct stat;
 struct rtcdate;
+struct sysinfo;
+struct procinfo;
+struct meminfo;
+struct syscallstats;
 
 // system calls
 int fork(void);
@@ -23,6 +27,12 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
+
+// Kernel monitoring system calls
+int getsysinfo(struct sysinfo*);
+int getprocinfo(struct procinfo*, int);
+int getmeminfo(struct meminfo*);
+int getsyscallstats(struct syscallstats*);
 
 // ulib.c
 int stat(const char*, struct stat*);

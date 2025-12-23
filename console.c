@@ -191,7 +191,7 @@ struct {
 void
 consoleintr(int (*getc)(void))
 {
-  int c, doprocdump = 0;
+  int c, doprocdump = 0, dokernelstatus = 0;
 
   acquire(&cons.lock);
   while((c = getc()) >= 0){
@@ -199,6 +199,10 @@ consoleintr(int (*getc)(void))
     case C('P'):  // Process listing.
       // procdump() locks cons.lock indirectly; invoke later
       doprocdump = 1;
+      break;
+    case C('S'):  // Kernel status display.
+      // kernelstatus() locks cons.lock indirectly; invoke later
+      dokernelstatus = 1;
       break;
     case C('U'):  // Kill line.
       while(input.e != input.w &&
@@ -229,6 +233,9 @@ consoleintr(int (*getc)(void))
   release(&cons.lock);
   if(doprocdump) {
     procdump();  // now call procdump() wo. cons.lock held
+  }
+  if(dokernelstatus) {
+    kernelstatus();  // now call kernelstatus() wo. cons.lock held
   }
 }
 
