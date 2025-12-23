@@ -179,7 +179,9 @@ UPROGS=\
 	_ln\
 	_ls\
 	_mkdir\
+	_procmon\
 	_rm\
+	_scheddemo\
 	_sh\
 	_stressfs\
 	_sysinfo\

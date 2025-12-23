@@ -21,6 +21,7 @@ struct {
   struct spinlock lock;
   int use_lock;
   struct run *freelist;
+  int total_pages;  // Total pages available for allocation
 } kmem;
 
 // Initialization happens in two phases.
@@ -33,6 +34,7 @@ kinit1(void *vstart, void *vend)
 {
   initlock(&kmem.lock, "kmem");
   kmem.use_lock = 0;
+  kmem.total_pages = 0;
   freerange(vstart, vend);
 }
 
@@ -48,8 +50,10 @@ freerange(void *vstart, void *vend)
 {
   char *p;
   p = (char*)PGROUNDUP((uint)vstart);
-  for(; p + PGSIZE <= (char*)vend; p += PGSIZE)
+  for(; p + PGSIZE <= (char*)vend; p += PGSIZE) {
+    kmem.total_pages++;  // Count total pages during init
     kfree(p);
+  }
 }
 //PAGEBREAK: 21
 // Free the page of physical memory pointed at by v,
@@ -109,5 +113,12 @@ kfreepages(void)
     release(&kmem.lock);
   
   return count;
+}
+
+// Get total memory pages (for kernel monitoring)
+int
+ktotalpages(void)
+{
+  return kmem.total_pages;
 }
 

@@ -60,9 +60,8 @@ getmeminfo(struct meminfo *info)
 {
   info->page_size = PGSIZE;
   info->kernel_end = (uint)end;
-  info->free_pages = count_free_pages();
-  // PHYSTOP is the end of physical memory (224MB by default)
-  info->total_pages = (PHYSTOP - (uint)end) / PGSIZE;
+  info->free_pages = kfreepages();
+  info->total_pages = ktotalpages();
   info->used_pages = info->total_pages - info->free_pages;
 }
 

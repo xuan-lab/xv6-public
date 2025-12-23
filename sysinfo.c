@@ -76,18 +76,17 @@ print_proclist(void)
   count = getprocinfo(procs, 64);
   
   printf(1, "--- PROCESS LIST ---\n");
-  printf(1, "PID   PPID  STATE     SIZE(KB)  KILLED  NAME\n");
-  printf(1, "----  ----  --------  --------  ------  ----------------\n");
+  printf(1, "PID   PPID  STATE     SIZE(KB)  NAME\n");
+  printf(1, "----  ----  --------  --------  ----------------\n");
   
   for(i = 0; i < count; i++) {
     state = (procs[i].state >= 0 && procs[i].state <= 5) 
                   ? state_names[procs[i].state] : "???     ";
-    printf(1, "%d     %d     %s  %d        %s      %s\n",
+    printf(1, "%d\t%d\t%s  %d\t%s\n",
            procs[i].pid,
            procs[i].ppid,
            state,
            procs[i].sz / 1024,
-           procs[i].killed ? "YES" : "NO",
            procs[i].name);
   }
   printf(1, "\n");
@@ -134,12 +133,12 @@ print_syscallstats(void)
   printf(1, "--- SYSTEM CALL STATISTICS ---\n");
   printf(1, "Total system calls: %d\n\n", stats.total_calls);
   
-  printf(1, "Syscall       Count\n");
-  printf(1, "------------  ---------\n");
+  printf(1, "Syscall      Count\n");
+  printf(1, "-----------  ---------\n");
   
   for(i = 1; i <= 21; i++) {
     if(stats.calls[i] > 0) {
-      printf(1, "%-12s  %d\n", syscall_names[i], stats.calls[i]);
+      printf(1, "%s\t%d\n", syscall_names[i], stats.calls[i]);
     }
   }
   printf(1, "\n");
